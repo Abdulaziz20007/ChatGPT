@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  
+
+    <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://chat.openai.com/favicon-32x32.png" />
+
+    <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111" />
+
+
+
+  
+  <title>ChatGPT</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.min.css'>
+
+  <script>
+  window.console = window.console || function(t) {};
+</script>
+</head>
+
+<body translate="no">   
+<div class="chat">
+  <div class="chat-title">
+    <h1>ChatGPT</h1>
+    <h2>online</h2>
+    <figure class="avatar">
+      <img src="https://chat.openai.com/favicon-32x32.png" />
+    </figure>
+  </div>
+  <div class="messages">
+    <div class="messages-content"></div>
+  </div>
+  <div class="message-box">
+    <textarea id="textarea" type="text" class="message-input" placeholder="Type message..."></textarea>
+    <button type="submit" class="message-submit">Send</button>
+  </div>
+
+</div>
+<div class="bg"></div>
+    <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.concat.min.js'></script>
+      <script id="rendered-js" >
+var $messages = $(".messages-content"),
+d,
+h,
+m,
+i = 0;
+
+$(window).load(function () {
+  $messages.mCustomScrollbar();
+  setTimeout(function () {
+    fakeMessage();
+  }, 100);
+});
+
+function updateScrollbar() {
+  $messages.mCustomScrollbar("update").mCustomScrollbar("scrollTo", "bottom", {
+    scrollInertia: 10,
+    timeout: 0 });
+
+}
+
+function setDate() {
+  d = new Date();
+  if (m != d.getMinutes()) {
+    m = d.getMinutes();
+    $('<div class="timestamp">' + d.getHours() + ":" + m + "</div>").appendTo(
+    $(".message:last"));
+
+  }
+}
+
+function insertMessage() {
+    subm()
+    msg = $(".message-input").val();
+  if ($.trim(msg) == "") {
+    return false;
+  }
+  $('<div class="message message-personal">' + msg + "</div>").
+  appendTo($(".mCSB_container")).
+  addClass("new");
+  setDate();
+  $(".message-input").val(null);
+  updateScrollbar();
+}
+
+$(".message-submit").click(function () {
+  insertMessage();
+});
+
+$(window).on("keydown", function (e) {
+  if (e.which == 13) {
+    insertMessage();
+    return false;
+  }
+});
+function fakeMessage() {
+  if ($(".message-input").val() != "") {
+    return false;
+  }
+  $(
+  '<div class="message loading new"><figure class="avatar"><img src="https://chat.openai.com/favicon-32x32.png" /></figure><span></span></div>').
+  appendTo($(".mCSB_container"));
+  updateScrollbar();
+
+  setTimeout(function () {
+    $(".message.loading").remove();
+    $(
+    '<div class="message new"><figure class="avatar"><img src="https://chat.openai.com/favicon-32x32.png" /></figure>' +
+    Fake.slice(-1)[0]  +
+    "</div>").
+
+    appendTo($(".mCSB_container")).
+    addClass("new");
+    setDate();
+    updateScrollbar();
+    i++;
+  }, 1000 + Math.random() * 20 * 100);
+}
+
+Fake = ["Hello. How can I assist you?"];
+function subm() {
+    let messagee = document.querySelector('#textarea').value;
+    console.log(messagee);
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'X-RapidAPI-Key': 'b4f378a932msh39e3a3465e0289ap166efejsn9d26a0dbfbed',
+            'X-RapidAPI-Host': 'openai80.p.rapidapi.com'
+        },
+        body: `{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"${messagee}"}]}`
+    };
+    let Fake = null
+    fetch('https://openai80.p.rapidapi.com/chat/completions', options)
+        .then(response => response.json())
+        .then(response => {
+            localStorage.setItem('key',response.choices[0].message.content),
+            pushh(),
+            answer()
+        })
+        .catch(err => console.error(err));
+}
+function pushh() {
+    Fake.push(localStorage.getItem("key"))
+    console.log(Fake);
+}
+function answer() {
+  setTimeout(function () {
+    fakeMessage();
+  }, 100 + Math.random() * 20 * 100);
+}
+    </script>
+
+  
+</body>
+
+</html>
